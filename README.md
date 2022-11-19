@@ -1,16 +1,13 @@
 plan:
 
-code object
 
-clue object
+game class (has game status, guesses remaining, a loop that plays each round)
 
-game object
+guesser class
 
-player object
+creator class (has code)
 
-computer object
-
-board object
+board class (has codes entered with clue for each.)
 
 
 1. player enters code (assume correct digits entered for now).
