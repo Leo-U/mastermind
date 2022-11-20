@@ -20,30 +20,42 @@ class Creator
   def self.strs
     @@code_strs
   end
+
+  def self.colors
+    @@colors
+  end
 end
 
 class Guesser
   def self.play_round
-    puts "Guesser, guess the four-color, non-repeating code sequence. Enter space-separated list."
+    puts "Guesser, type 4 of the following color names:"
+    puts Creator.colors.values.join' '
     @@current_guess = gets.split
-    p Creator.code.values
+    push_me = []
     @@current_guess.each_with_index do |el, i|
-      if el == Creator.strs[i]
+      if el == Creator.strs[i] && push_me.none?(el)
         Board.incr_clue(0)
-      elsif el != Creator.strs[i] && Creator.strs.include?(el)
+        push_me.push(el)
+      elsif el != Creator.strs[i] && Creator.strs.include?(el) && push_me.none?(el)
         Board.incr_clue(1)
+        push_me.push(el)
       end
     end
-    p Board.clue
+    p Creator.code.values
   end
 
   def self.play_game
+    i = 11
     12.times do
       Board.reset_clue
       Guesser.play_round
       if Guesser.current_guess == Creator.strs
         break
       end
+      # system("clear")
+      puts "Attempts remaining: #{i}"
+      p Board.clue
+      i -= 1
     end
   end
 
