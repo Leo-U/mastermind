@@ -52,6 +52,7 @@ class Guesser
       Guesser.play_round
       if Guesser.current_guess == Creator.strs
         puts "Guesser wins!"
+        puts Creator.code.values.join' '
         break
       end
       puts "Attempts remaining: #{i}"
