@@ -30,16 +30,15 @@ class Guesser
   def self.play_round
     @@current_guess = gets.split
     push_me = []
-    push_me_2 = []
-    @@current_guess.each_with_index do |el, i|
-      if el == Creator.strs[i] && push_me.none?(el)
+    iterate_me = @@current_guess.dup
+    iterate_me.each_with_index do |el, i|
+      if el == Creator.strs[i]
         Board.incr_clue(0)
         push_me.push(el)
-      elsif el != Creator.strs[i] && Creator.strs.include?(el) && push_me_2.none?(el)
-        Board.incr_clue(1)
-        push_me_2.push(el)
       end
     end
+    iterate_me.delete_if { |el| push_me.include?(el)}
+    iterate_me.uniq.each { |el| Board.incr_clue(1) if Creator.strs.include?(el)}
   end
 
   def self.play_game
