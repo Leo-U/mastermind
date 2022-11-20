@@ -9,7 +9,7 @@ class Creator
   @@code = []
 
   def self.set_code
-    @@code = @@colors.shuffle
+    @@code = @@colors.shuffle.first(4).to_h
   end
 
   def self.code
@@ -21,6 +21,8 @@ class Guesser
   def self.play_round()
     puts "Guesser, guess the four-color code sequence."
     @@current_guess = gets.split
+    p Creator.code.keys
+    @@current_guess.each_with_index {|el, i| puts el if el == Creator.code.keys[i].to_s}
   end
 
   def self.current_guess

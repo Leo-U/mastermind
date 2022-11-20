@@ -14,7 +14,7 @@ board class (has codes entered with clue for each.)
 2. the game does the following:
   A) checks if any of those digits are both correct and correctly placed. 
     
-    use each for both
+    ["red","green","blue"].each_with_index {|el, i| puts el if el == Creator.code.keys[i].to_s}
   
   
   
