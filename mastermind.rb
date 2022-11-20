@@ -28,33 +28,38 @@ end
 
 class Guesser
   def self.play_round
-    puts "Guesser, type 4 of the following color names:"
-    puts Creator.colors.values.join' '
     @@current_guess = gets.split
     push_me = []
+    push_me_2 = []
     @@current_guess.each_with_index do |el, i|
       if el == Creator.strs[i] && push_me.none?(el)
         Board.incr_clue(0)
         push_me.push(el)
-      elsif el != Creator.strs[i] && Creator.strs.include?(el) && push_me.none?(el)
+      elsif el != Creator.strs[i] && Creator.strs.include?(el) && push_me_2.none?(el)
         Board.incr_clue(1)
-        push_me.push(el)
+        push_me_2.push(el)
       end
     end
-    p Creator.code.values
   end
 
   def self.play_game
     i = 11
+    puts "Enter 4 of the color names to guess the code, e.g. 'red orange yellow green'. The code will not repeat colors, but Guesser may repeat colors in their guess. The clue is displayed in brackets for each turn -- the first number is the number of colors that are correct but in the right position, and the second number is the number of colors that are correct but in the wrong position."
+    puts Creator.colors.values.join' '
     12.times do
+      puts "Enter next choice." if i < 11
       Board.reset_clue
       Guesser.play_round
       if Guesser.current_guess == Creator.strs
+        puts "Guesser wins!"
         break
       end
-      # system("clear")
       puts "Attempts remaining: #{i}"
-      p Board.clue
+      if i >= 1
+        p Board.clue 
+      else 
+        puts "Guesser failed. The code was #{Creator.code.values.join' '} ."
+      end
       i -= 1
     end
   end
