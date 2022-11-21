@@ -25,4 +25,11 @@ board class (has codes entered with clue for each.)
    are the all and any methods useful here?
   
   As this is happening, the board updates accordingly, displaying strings in rows. I guess the clue object will be part of the board object?. If the guesser doesn't get the code right within 12 turns, then they lose.
-3. 
+3.
+
+
+"Now refactor your code to allow the human player to choose whether they want to be the creator of the secret code or the guesser."
+
+1. program prompts user if they want to be the code creator or the code guesser.
+  A) If the user chooses guesser, use Guesser.play_game
+  B) If the user chooses creator, user Creator.play_game
