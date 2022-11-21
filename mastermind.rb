@@ -15,6 +15,10 @@ class Creator
     @@code
   end
 
+  def self.strs=(arg)
+    @@code_strs = arg
+  end
+
   def self.strs
     @@code_strs
   end
@@ -82,28 +86,61 @@ class Computer
     set = set.map {|el| el.to_s}.map do |el|
         el.gsub("1","red ").gsub("2","orange ").gsub("3","yellow ").gsub("4","green ").gsub("5","blue ").gsub("6","brown ").gsub("7","black ").gsub("8","white ").rstrip
     end
-    Guesser.current_guess = "red red orange orange".split
 
-    12.times do
-      Guesser.play_round
-      if Guesser.current_guess == Creator.strs
-        puts "Guesser wins!"
-        puts Creator.code.values.join' '
-        break
-      end
-      @@current_clue = Board.clue
-      Board.reset_clue
-      new_arr = []
-      set.each do |el|
-        Guesser.current_guess = el.split
-        Guesser.play_round
-        new_arr.push(el) if Board.clue == @@current_clue
-        Board.reset_clue
-      end
-      set = new_arr
-      Guesser.current_guess = set[0].split
-      p set.length
+    Guesser.current_guess = "red red orange orange".split
+    p Guesser.current_guess
+
+  12.times do
+    Board.reset_clue
+    if Guesser.current_guess == Creator.strs
+      puts "Guesser wins!"
+      puts Creator.code.values.join' '
+      break
     end
+    push_me = []
+    Guesser.play_round
+    clue_copy = Board.clue
+    p set.length
+    set.each do |el|
+      Board.reset_clue
+      code_copy = Creator.strs
+      Creator.strs = el.split
+      Guesser.play_round
+      push_me.push(el) if Board.clue == clue_copy
+      Creator.strs = code_copy
+    end
+    set = push_me if push_me.length > 0
+    Guesser.current_guess = set[0].split if push_me.length > 0
+    p push_me.length
+    p set[0]
+
+    p Guesser.current_guess
+
+  end
+
+  
+
+
+
+    # 12.times do
+    #   Guesser.play_round
+    #   if Guesser.current_guess == Creator.strs
+    #     puts "Guesser wins!"
+    #     puts Creator.code.values.join' '
+    #     break
+    #   end
+    #   @@current_clue = Board.clue
+    #   Board.reset_clue
+    #   new_arr = []
+    #   set.each do |el|
+    #     Guesser.current_guess = el.split
+    #     Guesser.play_round
+    #     new_arr.push(el) if Board.clue == @@current_clue
+    #     Board.reset_clue
+    #   end
+    #   set = new_arr
+    #   Guesser.current_guess = set[0].split
+    # end
 
     # set = set.filter do |el|
     #   Guesser.current_guess = 
