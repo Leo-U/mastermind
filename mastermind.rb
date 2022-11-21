@@ -22,12 +22,6 @@ class Creator
   def self.colors
     @@colors
   end
-
-  
-
-  def self.play_game
-    @@code_choice = gets.split
-  end
 end
 
 class Guesser
@@ -35,12 +29,11 @@ class Guesser
     @@current_guess
   end
 
-  def self.play_round
-    if ActivePlayer.chosen == "guesser"
-      @@current_guess = gets.split
-    elsif ActivePlayer.chosen == "creator"
-      @@current_guess = input
-    end
+  def self.current_guess=(guess)
+    @@current_guess = guess
+  end
+
+  def self.play_round ()
     push_me = []
     iterate_me = @@current_guess.dup
     iterate_me.each_with_index do |el, i|
@@ -53,14 +46,18 @@ class Guesser
     iterate_me.uniq.each { |el| Board.incr_clue(1) if Creator.strs.include?(el)}
   end
 
-  def self.play_game (input = nil)
+  def self.play_game
     i = 11
     puts "Enter 4 of the color names to guess the code, e.g. 'red orange yellow green'. The code will not repeat colors, but Guesser may repeat colors in their guess. The clue is displayed in brackets for each turn -- the first number is the number of colors that are correct but in the right position, and the second number is the number of colors that are correct but in the wrong position."
     puts Creator.colors.values.join' '
-
     12.times do
       puts "Enter next choice." if i < 11
       Board.reset_clue
+      if ActivePlayer.chosen == "guesser"
+        @@current_guess = gets.split
+      elsif ActivePlayer.chosen == "creator"
+        # @@current_guess = 
+      end
       Guesser.play_round
       if Guesser.current_guess == Creator.strs
         puts "Guesser wins!"
@@ -75,6 +72,42 @@ class Guesser
       end
       i -= 1
     end
+  end
+end
+
+class Computer
+  @@current_clue = []
+  def self.crack_code
+    set = (1111..8888).to_a.delete_if {|el| el.to_s.include?("0") || el.to_s.include?("9")}
+    set = set.map {|el| el.to_s}.map do |el|
+        el.gsub("1","red ").gsub("2","orange ").gsub("3","yellow ").gsub("4","green ").gsub("5","blue ").gsub("6","brown ").gsub("7","black ").gsub("8","white ").rstrip
+    end
+    Guesser.current_guess = "red red orange orange".split
+
+    12.times do
+      Guesser.play_round
+      if Guesser.current_guess == Creator.strs
+        puts "Guesser wins!"
+        puts Creator.code.values.join' '
+        break
+      end
+      @@current_clue = Board.clue
+      Board.reset_clue
+      new_arr = []
+      set.each do |el|
+        Guesser.current_guess = el.split
+        Guesser.play_round
+        new_arr.push(el) if Board.clue == @@current_clue
+        Board.reset_clue
+      end
+      set = new_arr
+      Guesser.current_guess = set[0].split
+      p set.length
+    end
+
+    # set = set.filter do |el|
+    #   Guesser.current_guess = 
+    # end
   end
 end
 
@@ -106,5 +139,7 @@ class Board
 end
 
 Creator.set_code
-ActivePlayer.gets_active_player
-Guesser.play_game
+Computer.crack_code
+# Creator.set_code
+# ActivePlayer.gets_active_player
+# Guesser.play_game
