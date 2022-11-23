@@ -12,19 +12,19 @@ class Creator
   end
 
   def self.set_code
-    @@code_strs = @@code.keys.map {|el| el = el.to_s}
+    @@code_strs = @@code.keys.map {|el| el.to_s}
   end
 
-  def self.code=(arg)
-    @@code = arg
+  def self.code=(c)
+    @@code = c
   end
 
   def self.code
     @@code
   end
 
-  def self.strs=(arg)
-    @@code_strs = arg
+  def self.strs=(c)
+    @@code_strs = c
   end
 
   def self.strs
@@ -150,14 +150,8 @@ class Game
       puts "#{Creator.colors.values.join' '}"
       puts "For each turn, the computer will use the 2-digit clue you'll see in brackets — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
       code = gets.split
-      code = code.map { |el| el.to_sym}
-      push_me = []
-      Creator.colors.each_pair do | key, value|
-        if code.include?(key)
-          push_me.push([key, value])
-        end
-      end
-      Creator.code = push_me.to_h
+      code = code.map { |el| el.to_sym}.map {|el| [el, Creator.colors[el]]}.to_h
+      Creator.code = code
       Creator.set_code
       Computer.crack_code
     elsif @@active_player == "guesser"
