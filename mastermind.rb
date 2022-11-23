@@ -1,14 +1,8 @@
-class Hash
-  def shuffle
-    Hash[self.to_a.sample(self.length)]
-  end
-end
-
 class Creator
   @@colors = {red: "🔴", orange: "🟠", yellow: "🟡", green: "🟢", blue: "🔵", brown: "🟤", black: "⚫", white: "⚪"}
 
   def self.shuffle_code
-    @@code = @@colors.shuffle.first(4).to_h
+    @@code = @@colors.to_a.sample(4).to_h
   end
 
   def self.set_code
@@ -91,9 +85,11 @@ class Computer
         el.gsub("1","red ").gsub("2","orange ").gsub("3","yellow ").gsub("4","green ").gsub("5","blue ").gsub("6","brown ").gsub("7","black ").gsub("8","white ").rstrip
     end
     Guesser.current_guess = "red red orange orange".split
+    p Guesser.current_guess
+    p Creator.strs
     i = 11
     12.times do
-      sleep(2)
+      sleep(1.5)
       puts "The computer guesses '#{Guesser.current_guess.join' '}'."
       Board.reset_clue
       if Guesser.current_guess == Creator.strs
@@ -133,13 +129,13 @@ class Board
   end
 
   def self.reset_clue
-    @@clue = [0,0]
+    @@clue = [0, 0]
   end
 end
 
 class Game
   def self.choose_side
-    puts "Do you want to be the code guesser or the code chooser? Type 'guesser' or 'chooser'."
+    puts "Do you want to be the code guesser or the code chooser? Enter 'guesser' or 'chooser'."
     @@active_player = gets.chomp
   end
 
@@ -150,7 +146,7 @@ class Game
       puts "#{Creator.colors.values.join' '}"
       puts "For each turn, the computer will use the 2-digit clue you'll see in brackets — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
       code = gets.split
-      code = code.map { |el| el.to_sym}.map {|el| [el, Creator.colors[el]]}.to_h
+      code = code.map { |el| [el.to_sym, Creator.colors[el]]}.to_h
       Creator.code = code
       Creator.set_code
       Computer.crack_code
