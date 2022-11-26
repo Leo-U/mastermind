@@ -8,4 +8,6 @@ current plan:
 
 2) add typo handling.
 
+3) possibility: add detailed explanation in readme for how the code works
+
 note: look up "design patterns" from Alex's link.
