@@ -132,13 +132,13 @@ class Clue
 end
 
 class Game
-  def self.choose_side
+  def choose_side
     puts "Do you want to be the code guesser or the code chooser? Enter 'guesser' or 'chooser'."
     @@active_player = gets.chomp
   end
 
-  def self.play_game
-    choose_side
+  def play_game
+    self.choose_side
     if @@active_player == "chooser"
       puts "To choose the code that the computer must guess, enter a space-separated, non-repeating list (e.g. 'red white blue yellow') of these colors:"
       puts "#{Creator.colors.values.join' '}"
@@ -156,4 +156,4 @@ class Game
   end
 end
 
-Game.play_game
+Game.new.play_game
