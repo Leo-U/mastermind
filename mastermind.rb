@@ -1,26 +1,29 @@
+# frozen_string_literal: true
+
 module CodeAndColorData
   def colors
-    @colors = {red: "🔴", orange: "🟠", yellow: "🟡", green: "🟢", blue: "🔵", brown: "🟤", black: "⚫", white: "⚪"}
+    @colors = { red: '🔴', orange: '🟠', yellow: '🟡', green: '🟢', blue: '🔵', brown: '🟤', black: '⚫', white: '⚪' }
   end
-  
+
   def shuffle_code
     @code = colors.to_a.sample(4).to_h
   end
 
-  def set_code(code)
-    @code_strs = code.keys.map {|el| el.to_s}
+  def map_code(code)
+    @code_strs = code.keys.map(&:to_s)
   end
 
-  def code=(c)
-    @code = c
+  def code=(code)
+    @code = code
   end
 
   def code
     @code
   end
 
-  def strs=(c)
-    @code_strs = c
+  def strs=(code)
+    ode
+    @code_strs = code
   end
 
   def strs
@@ -31,45 +34,45 @@ end
 class Guesser
   include CodeAndColorData
   def self.current_guess
-    @@current_guess
+    @current_guess
   end
 
   def self.current_guess=(guess)
-    @@current_guess = guess
+    @current_guess = guess
   end
 
   def self.play_round(strs)
     push_me = []
-    iterate_me = @@current_guess.dup
+    iterate_me = @current_guess.dup
     iterate_me.each_with_index do |el, i|
       if el == strs[i]
         Clue.incr_clue(0)
         push_me.push(el)
       end
     end
-    iterate_me.delete_if { |el| push_me.include?(el)}
-    iterate_me.uniq.each { |el| Clue.incr_clue(1) if strs.include?(el)}
+    iterate_me.delete_if { |el| push_me.include?(el) }
+    iterate_me.uniq.each { |el| Clue.incr_clue(1) if strs.include?(el) }
   end
 
   def self.play_game(colors, strs, code)
     i = 11
     puts "Enter 4 of the color names to guess the code, e.g. 'red orange yellow green'. The code will not repeat colors, but you may repeat colors in your guess. The 2-digit clue is displayed in brackets for each turn — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
-    puts colors.values.join' '
+    puts colors.values.join ' '
     12.times do
-      puts "Enter next choice." if i < 11
+      puts 'Enter next choice.' if i < 11
       Clue.reset_clue
-      @@current_guess = gets.split
+      @current_guess = gets.split
       Guesser.play_round(strs)
       if Guesser.current_guess == strs
-        puts "Guesser wins!"
-        puts code.values.join' '
+        puts 'Guesser wins!'
+        puts code.values.join ' '
         break
       end
       puts "Attempts remaining: #{i}"
       if i >= 1
         p Clue.clue
-      else 
-        puts "Guesser failed. The code was #{code.values.join' '} ."
+      else
+        puts "Guesser failed. The code was #{code.values.join ' '} ."
       end
       i -= 1
     end
@@ -78,21 +81,23 @@ end
 
 class Computer
   include CodeAndColorData
-  @@current_clue = []
-  def self.crack_code (strs, code)
-    set = (1111..8888).to_a.delete_if {|el| el.to_s.include?("0") || el.to_s.include?("9")}
-    set = set.map {|el| el.to_s}.map do |el|
-        el.gsub("1","red ").gsub("2","orange ").gsub("3","yellow ").gsub("4","green ").gsub("5","blue ").gsub("6","brown ").gsub("7","black ").gsub("8","white ").rstrip
+  @current_clue = []
+  def self.crack_code(strs, code)
+    set = (1111..8888).to_a.delete_if { |el| el.to_s.include?('0') || el.to_s.include?('9') }
+    set = set.map(&:to_s).map do |el|
+      el.gsub('1', 'red ').gsub('2', 'orange ').gsub('3', 'yellow ').gsub('4', 'green ').gsub('5', 'blue ').gsub('6', 'brown ').gsub('7', 'black ').gsub(
+        '8', 'white '
+      ).rstrip
     end
-    Guesser.current_guess = "red red orange orange".split
+    Guesser.current_guess = 'red red orange orange'.split
     i = 11
     12.times do
       sleep(1.5)
-      puts "The computer guesses '#{Guesser.current_guess.join' '}'."
+      puts "The computer guesses '#{Guesser.current_guess.join ' '}'."
       Clue.reset_clue
       if Guesser.current_guess == strs
-        puts "Computer wins!"
-        puts code.values.join' '
+        puts 'Computer wins!'
+        puts code.values.join ' '
         break
       end
       push_me = []
@@ -116,18 +121,18 @@ class Computer
 end
 
 class Clue
-  @@clue = [0, 0]
+  @clue = [0, 0]
 
   def self.incr_clue(index)
-    @@clue[index] += 1
+    @clue[index] += 1
   end
 
   def self.clue
-    @@clue
+    @clue
   end
 
   def self.reset_clue
-    @@clue = [0, 0]
+    @clue = [0, 0]
   end
 end
 
@@ -135,23 +140,24 @@ class Game
   include CodeAndColorData
   def choose_side
     puts "Do you want to be the code guesser or the code chooser? Enter 'guesser' or 'chooser'."
-    @@active_player = gets.chomp
+    @active_player = gets.chomp
   end
 
   def play_game
-    self.choose_side
-    if @@active_player == "chooser"
+    choose_side
+    case @active_player
+    when 'chooser'
       puts "To choose the code that the computer must guess, enter a space-separated, non-repeating list (e.g. 'red white blue yellow') of these colors:"
-      puts "#{colors.values.join' '}"
+      puts colors.values.join(' ').to_s
       puts "For each turn, the computer will use the 2-digit clue you'll see in brackets — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
       chosen_code = gets.split
-      chosen_code = chosen_code.map { |el| [el.to_sym, colors[el]]}.to_h
+      chosen_code = chosen_code.map { |el| [el.to_sym, colors[el]] }.to_h
       code = chosen_code
-      set_code(code)
+      map_code(code)
       Computer.crack_code(strs, code)
-    elsif @@active_player == "guesser"
+    when 'guesser'
       code = shuffle_code
-      set_code(code)
+      map_code(code)
       Guesser.play_game(colors, strs, code)
     end
   end
