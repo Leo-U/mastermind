@@ -33,12 +33,12 @@ end
 
 class Guesser
   include CodeAndColorData
-  def self.current_guess
-    @current_guess
+  class << self
+    attr_reader :current_guess
   end
 
-  def self.current_guess=(guess)
-    @current_guess = guess
+  class << self
+    attr_writer :current_guess
   end
 
   def self.play_round(strs)
@@ -56,7 +56,7 @@ class Guesser
 
   def self.play_game(colors, strs, code)
     i = 11
-    puts "Enter 4 of the color names to guess the code, e.g. 'red orange yellow green'. The code will not repeat colors, but you may repeat colors in your guess. The 2-digit clue is displayed in brackets for each turn — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
+    puts "Guess code, e.g. 'red orange yellow green'. The code will not repeat colors, but you may repeat colors in your guess. The 2-digit clue is in brackets for each turn — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
     puts colors.values.join ' '
     12.times do
       puts 'Enter next choice.' if i < 11
@@ -127,8 +127,8 @@ class Clue
     @clue[index] += 1
   end
 
-  def self.clue
-    @clue
+  class << self
+    attr_reader :clue
   end
 
   def self.reset_clue
