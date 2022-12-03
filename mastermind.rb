@@ -33,8 +33,6 @@ module CodeAndColorData
   def typo_str
     @typo_str = "Typo. Try again."
   end
-
-  
 end
 
 class Guesser
@@ -60,14 +58,18 @@ class Guesser
     iterate_me.uniq.each { |el| Clue.incr_clue(1) if strs.include?(el) }
   end
 
-  def self.play_game(colors, strs, code)
+  def self.play_game(colors, strs, code, typo_str)
     i = 11
     puts "Guess code, e.g. 'red orange yellow green'. The code will not repeat colors, but you may repeat colors in your guess. The 2-digit clue is in brackets for each turn — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
     puts colors.values.join ' '
     12.times do
       puts 'Enter next choice.' if i < 11
       Clue.reset_clue
-      @current_guess = gets.split
+      loop do
+        @current_guess = gets.split
+        break if @current_guess.all?{|el| colors.keys.map(&:to_s).include?(el)}
+        puts typo_str
+      end
       Guesser.play_round(strs)
       if Guesser.current_guess == strs
         puts 'Guesser wins!'
@@ -172,7 +174,7 @@ class Game
     when 'guesser'
       code = shuffle_code
       map_code(code)
-      Guesser.play_game(colors, strs, code)
+      Guesser.play_game(colors, strs, code, typo_str)
     end
   end
 end
