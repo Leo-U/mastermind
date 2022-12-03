@@ -29,6 +29,12 @@ module CodeAndColorData
   def strs
     @code_strs
   end
+
+  def typo_str
+    @typo_str = "Typo. Try again."
+  end
+
+  
 end
 
 class Guesser
@@ -139,20 +145,28 @@ end
 class Game
   include CodeAndColorData
   def choose_side
-    puts "Do you want to be the code guesser or the code chooser? Enter 'guesser' or 'chooser'."
-    @active_player = gets.chomp
+    loop do
+      puts "Do you want to be the code guesser or the code chooser? Enter 'guesser' or 'chooser'."
+      @active_player = gets.chomp.downcase
+      break if @active_player == 'guesser' || @active_player == 'chooser'
+      puts typo_str
+    end
   end
 
   def play_game
     choose_side
     case @active_player
     when 'chooser'
-      puts "To choose the code that the computer must guess, enter a space-separated, non-repeating list (e.g. 'red white blue yellow') of these colors:"
       puts colors.values.join(' ').to_s
-      puts "For each turn, the computer will use the 2-digit clue you'll see in brackets — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
-      chosen_code = gets.split
-      chosen_code = chosen_code.map { |el| [el.to_sym, colors[el]] }.to_h
-      code = chosen_code
+      puts "Enter SPACE-SEPARATED, NON-REPEATING sequence (e.g. 'red white blue green')."
+      puts "On each turn, the computer will use the 2-digit clue seen in brackets — the first digit is how many colors are correct and in the right position, and the second is how many colors are correct but in the wrong position."
+      loop do
+        @chosen_code = gets.downcase.split
+        break if @chosen_code.uniq.length == 4 && @chosen_code.all?{|el| colors.keys.map(&:to_s).include?(el)}
+        puts typo_str
+      end
+      @chosen_code = @chosen_code.map { |el| [el.to_sym, colors[el]] }.to_h
+      code = @chosen_code
       map_code(code)
       Computer.crack_code(strs, code)
     when 'guesser'
