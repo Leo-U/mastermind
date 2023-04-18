@@ -60,7 +60,7 @@ class Guesser
 
   def self.play_game(colors, strs, code, typo_str)
     i = 11
-    puts "Guess code, e.g. 'red orange yellow green'. The code will not repeat colors, but you may repeat colors in your guess. The 2-digit clue is in brackets for each turn — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
+    puts "Guess code e.g. 'red orange yellow green'. The CODE WILL NOT REPEAT COLORS, BUT YOU MAY REPEAT COLORS IN YOUR GUESS. A 2-digit clue will show in brackets after each guess — the first digit is the number of colors that are correct and in the right position, and the second digit is the number of colors that are correct but in the wrong position."
     puts colors.values.join ' '
     12.times do
       puts 'Enter next choice.' if i < 11
